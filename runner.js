@@ -1,5 +1,8 @@
 const fs = require('fs');
 const path = require('path');
+const chalk = require('chalk');
+
+const ignoreDirs = [ 'node_modules' ];
 
 class Runner {
 	constructor() {
@@ -7,17 +10,17 @@ class Runner {
 	}
 
 	async collectFiles(targetPath) {
-		console.log('==== Collecting files ====');
+		console.log(chalk.yellow('==== Collecting files ===='));
 		const files = await fs.promises.readdir(targetPath);
 
-		console.log('==== looking for .test.js files ====');
+		console.log(chalk.yellow('==== looking for .test.js files ===='));
 		for (let file of files) {
 			const filePath = path.join(targetPath, file);
 			const stats = await fs.promises.lstat(filePath);
 
 			if (stats.isFile() && file.includes('.test.js')) {
-				this.testFiles.push({ name: filePath });
-			} else if (stats.isDirectory()) {
+				this.testFiles.push({ name: filePath, shortName: file });
+			} else if (stats.isDirectory() && !ignoreDirs.includes(file)) {
 				const childFiles = await fs.promises.readdir(filePath);
 
 				files.push(...childFiles.map((f) => path.join(file, f)));
@@ -26,19 +29,30 @@ class Runner {
 	}
 
 	async runTests() {
-		console.log('==== Running Tests ====');
 		for (let file of this.testFiles) {
+			console.log(chalk.cyan(`==== Running Tests on ${file.shortName}====`));
 			const beforeEaches = [];
 			global.beforeEach = (fn) => {
 				beforeEaches.push(fn);
 			};
 
 			global.it = (desc, fn) => {
-				before.forEach((func) => func());
-				fn();
+				beforeEaches.forEach((func) => func());
+				try {
+					fn();
+					console.log(chalk.green(`\tPASSED - ${desc}`));
+				} catch (err) {
+					const message = err.message.replace(/\n/g, '\n\t\t');
+					console.log(chalk.red(`\tFAILED - ${desc}`));
+					console.log(chalk.red('\t', message));
+				}
 			};
 
-			require(file.name);
+			try {
+				require(file.name);
+			} catch (err) {
+				console.log(err);
+			}
 		}
 	}
 }
