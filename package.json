@@ -1,5 +1,5 @@
 {
-	"name": "tme",
+	"name": "testme",
 	"version": "1.0.0",
 	"description": "Testing Framework",
 	"main": "index.js",
@@ -12,6 +12,7 @@
 		"tme": "index.js"
 	},
 	"dependencies": {
-		"chalk": "^4.0.0"
+		"chalk": "^4.0.0",
+		"jsdom": "^16.2.2"
 	}
 }
