@@ -1,0 +1,12 @@
+{
+  "containers.projects.showProject.tab.nav.files": "Files",
+  "containers.projects.showProject.tab.nav.locales": "Languages",
+  "containers.projects.showProject.tab.nav.settings": "Settings",
+  "containers.settings.connectors.github": "GitHub",
+  "containers.settings.connectors.gitlab": "GitLab",
+  "containers.settings.locales.title": "Languages",
+  "pages.404.errorHeader": "404 error",
+  "pages.404.hereByAccidentParagraph": "Looks like you ended up here by accident?",
+  "pages.404.noPageHeader": "There’s no page here",
+  "pages.404.returnToDashboardLink": "Return to your dashboard"
+}
